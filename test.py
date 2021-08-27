@@ -35,7 +35,7 @@ class AnimatingLandscape():
     def PredictMotion(self):  
         print('Motion: ')
         P_m = ConditionalMotionNet()
-        param = torch.load(self.model_path + '/PMNet_weight_' + self.model_epoch + '.pth')
+        param = torch.load(self.model_path + '/PMNet_weight_' + self.model_epoch + '.pth', map_location=torch.device('cpu'))
         P_m.load_state_dict(param)
         if self.gpu>-1:
             P_m.cuda(self.gpu)
@@ -123,12 +123,12 @@ class AnimatingLandscape():
         print('\nAppearance: ',)
         minimum_loop_num = int(1/self.s_a)
         P_a = ConditionalAppearanceNet(8)
-        param = torch.load(self.model_path + '/PANet_weight_' + self.model_epoch + '.pth')
+        param = torch.load(self.model_path + '/PANet_weight_' + self.model_epoch + '.pth', map_location=torch.device('cpu'))
         P_a.load_state_dict(param)
         if self.gpu>-1:
             P_a.cuda(self.gpu)
         E_a = define_E(3,8,64,which_model_netE='resnet_128',vaeLike=True)
-        param = torch.load(self.model_path + '/EANet_weight_' + self.model_epoch + '.pth')
+        param = torch.load(self.model_path + '/EANet_weight_' + self.model_epoch + '.pth', map_location=torch.device('cpu'))
         E_a.load_state_dict(param)
         if self.gpu>-1:
             E_a.cuda(self.gpu)
