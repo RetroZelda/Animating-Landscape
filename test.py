@@ -31,6 +31,8 @@ class AnimatingLandscape():
         self.w, self.h = 256, 256 #Image size for network input
         self.fw, self.fh = None, None #Output image size
         self.pad = 64 #Reflection padding size for sampling outside of the image
+        self.codec = args.codec
+        self.file_extension = args.file_extension
     
     def PredictMotion(self):  
         print('Motion: ')
@@ -222,12 +224,13 @@ class AnimatingLandscape():
         return V
         
     def GenerateVideo(self):
+        output_filename = self.outdir_path + '/' + os.path.splitext(self.input_path)[0].split('/')[-1]
         V_mloop, V_f = self.PredictMotion()      
-        videoWrite(V_mloop, out_path = self.outdir_path + '/' + os.path.splitext(self.input_path)[0].split('/')[-1] + '_motion.avi')
-        videoWrite(V_f, out_path = self.outdir_path + '/' + os.path.splitext(self.input_path)[0].split('/')[-1] + '_flow.avi')
+        videoWrite(V_mloop, out_path = output_filename + '_motion.' + self.file_extension, codec = self.codec)
+        videoWrite(V_f, out_path = output_filename + '_flow.' + self.file_extension, codec = self.codec)
         
         V = self.PredictAppearance(V_mloop)                
-        videoWrite(V, out_path = self.outdir_path + '/' + os.path.splitext(self.input_path)[0].split('/')[-1] + '.avi')
+        videoWrite(V, out_path = output_filename + '.' + self.file_extension, codec = self.codec)
         print('\nDone.')
 
 if __name__ == '__main__':
@@ -242,6 +245,8 @@ if __name__ == '__main__':
     parser.add_argument('--appearance_speed', '-as', default=0.1)
     parser.add_argument('--motion_frame_number', '-mn', default=199)
     parser.add_argument('--outdir', '-o', default='./outputs')
+    parser.add_argument('--codec', '-c', default='mjpg')
+    parser.add_argument('--file_extension', '-e', default='avi')
     args = parser.parse_args()
     
     AS = AnimatingLandscape(args)

@@ -39,17 +39,16 @@ def generateLoop(f_list, nb_loop=1):
             V_mloop.append(final_img)
     return V_mloop
             
-def videoWrite(f_list, out_path = "./output.avi", fps = 30.):
-    
+def videoWrite(f_list, out_path = "./output.avi", codec = "mjpg", fps = 30.):
     img = f_list[0]
     h, w = img.shape[0], img.shape[1]
-    cap = cv2.VideoCapture(0)
-    fourcc = cv2.cv.CV_FOURCC(*'XVID') if cv2.__version__[0] == '2' else cv2.VideoWriter_fourcc(*'XVID')
+    #cap = cv2.VideoCapture(-1)
+    fourcc = cv2.cv.CV_FOURCC(codec[0], codec[1], codec[2], codec[3]) if cv2.__version__[0] == '2' else cv2.VideoWriter_fourcc(codec[0], codec[1], codec[2], codec[3])
     out = cv2.VideoWriter(out_path ,fourcc, fps, (w,h))
     for img in f_list:
         out.write(img)
     
-    cap.release()
+    #cap.release()
     out.release()
 
 def normalize(input):
